@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3018232320346847"
-     crossorigin="anonymous"></script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>LOOTDROP – Gratis-Spiele &amp; Gaming-Deals</title>
@@ -397,42 +395,23 @@
     line-height:1.2;
   }
   .ad-title span{ color:var(--accent); }
-  .ad-slot-wrap{
-    min-height:90px;
+  .loading-bar-track{
+    width:100%;
+    height:10px;
     background:var(--surface-2);
-    border:1px dashed var(--border);
-    border-radius:var(--radius-md);
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    border-radius:99px;
     overflow:hidden;
-    margin-bottom:24px;
-    padding:6px;
+    margin:0 auto 14px;
   }
-  .countdown-wrap{
-    position:relative;
-    width:104px; height:104px;
-    margin:0 auto 18px;
-  }
-  .countdown-ring{ width:100%; height:100%; transform:rotate(-90deg); }
-  .ring-bg{ fill:none; stroke:var(--surface-2); stroke-width:7; }
-  .ring-progress{
-    fill:none;
-    stroke:var(--accent);
-    stroke-width:7;
-    stroke-linecap:round;
-    transition:stroke-dashoffset 1s linear;
-  }
-  #countdown-number{
-    position:absolute; inset:0;
-    display:flex; align-items:center; justify-content:center;
-    font-family:var(--font-display);
-    font-size:2.1rem;
-    color:var(--text);
+  .loading-bar-fill{
+    height:100%;
+    width:0%;
+    border-radius:99px;
+    background:linear-gradient(90deg, var(--accent), var(--accent-soft));
+    transition:width 1s linear;
   }
   .ad-redirect-text{ color:var(--text-muted); font-size:0.88rem; margin:0; }
   .ad-redirect-text a{ color:var(--accent-soft); }
-  .ad-disclaimer{ color:var(--text-muted); font-size:0.72rem; margin:18px 0 0; opacity:0.7; }
 
   @media (max-width:560px){
     header.site{ padding:34px 16px 24px; }
@@ -444,7 +423,7 @@
     .live-dot{ animation:none; }
     .card{ transition:none; }
     .skeleton .card-media{ animation:none; }
-    .ring-progress{ transition:none; }
+    .loading-bar-fill{ transition:none; }
   }
 </style>
 </head>
@@ -493,24 +472,17 @@
   </div>
 </div>
 
-<!-- Ad interstitial / redirect -->
+<!-- Weiterleitung -->
 <div class="ad-overlay" id="ad-overlay" hidden>
   <div class="ad-card">
     <p class="ad-eyebrow">Einen Moment</p>
     <h2 class="ad-title">Du wirst weitergeleitet zu <span id="ad-target-domain">Shop</span></h2>
 
-    <div class="ad-slot-wrap" id="adsense-container"></div>
-
-    <div class="countdown-wrap">
-      <svg class="countdown-ring" viewBox="0 0 100 100">
-        <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
-        <circle class="ring-progress" id="ring-progress" cx="50" cy="50" r="45"></circle>
-      </svg>
-      <span id="countdown-number">10</span>
+    <div class="loading-bar-track">
+      <div class="loading-bar-fill" id="loading-bar-fill"></div>
     </div>
 
     <p class="ad-redirect-text">Falls die Weiterleitung nicht automatisch startet: <a id="ad-fallback-link" href="#" rel="noopener">hier klicken</a></p>
-    <p class="ad-disclaimer">Werbung wird über Google AdSense ausgespielt.</p>
   </div>
 </div>
 
@@ -520,9 +492,7 @@
 
   var API_URL = "https://www.gamerpower.com/api/giveaways?type=game";
   var REFRESH_MS = 10000;
-  var AD_SECONDS = 10;
-  var ADSENSE_CLIENT = "ca-pub-3018232320346847";
-  var ADSENSE_SLOT = "7825819006";
+  var AD_SECONDS = 3;
 
   var gridEl = document.getElementById("grid");
   var dealCountEl = document.getElementById("deal-count");
@@ -539,9 +509,7 @@
 
   var adOverlay = document.getElementById("ad-overlay");
   var adTargetDomain = document.getElementById("ad-target-domain");
-  var adsenseContainer = document.getElementById("adsense-container");
-  var ringProgress = document.getElementById("ring-progress");
-  var countdownNumber = document.getElementById("countdown-number");
+  var loadingBarFill = document.getElementById("loading-bar-fill");
   var adFallbackLink = document.getElementById("ad-fallback-link");
 
   var currentDeals = [];
@@ -549,9 +517,7 @@
   var lastFetchTime = null;
   var adTimer = null;
 
-  var RING_CIRCUMFERENCE = 2 * Math.PI * 45;
-  ringProgress.style.strokeDasharray = RING_CIRCUMFERENCE;
-
+  
   /* ---------- helpers ---------- */
 
   function cleanTitle(raw){
@@ -781,38 +747,10 @@
     }
   });
 
-  /* ---------- ad interstitial + redirect ---------- */
-
-  function loadAdsenseScriptOnce(){
-    if(document.getElementById("adsbygoogle-script")) return;
-    var s = document.createElement("script");
-    s.id = "adsbygoogle-script";
-    s.async = true;
-    s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + ADSENSE_CLIENT;
-    s.crossOrigin = "anonymous";
-    document.head.appendChild(s);
-  }
+  /* ---------- loading bar + redirect ---------- */
 
   function startAdRedirect(targetUrl){
     modalOverlay.hidden = true;
-    loadAdsenseScriptOnce();
-
-    adsenseContainer.innerHTML = "";
-    var ins = document.createElement("ins");
-    ins.className = "adsbygoogle";
-    ins.style.display = "block";
-    ins.style.width = "100%";
-    ins.setAttribute("data-ad-client", ADSENSE_CLIENT);
-    ins.setAttribute("data-ad-slot", ADSENSE_SLOT);
-    ins.setAttribute("data-ad-format", "auto");
-    ins.setAttribute("data-full-width-responsive", "true");
-    adsenseContainer.appendChild(ins);
-
-    try{
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    }catch(e){
-      console.warn("AdSense konnte nicht geladen werden:", e);
-    }
 
     adTargetDomain.textContent = hostnameOf(targetUrl);
     adFallbackLink.href = targetUrl;
@@ -820,25 +758,18 @@
     adOverlay.hidden = false;
     document.body.classList.add("no-scroll");
 
-    var remaining = AD_SECONDS;
-    updateCountdownUI(remaining);
+    loadingBarFill.style.transition = "none";
+    loadingBarFill.style.width = "0%";
+    // force reflow so the transition below actually animates from 0%
+    void loadingBarFill.offsetWidth;
+    loadingBarFill.style.transition = "width " + AD_SECONDS + "s linear";
+    loadingBarFill.style.width = "100%";
 
-    if(adTimer) clearInterval(adTimer);
-    adTimer = setInterval(function(){
-      remaining -= 1;
-      updateCountdownUI(remaining);
-      if(remaining <= 0){
-        clearInterval(adTimer);
-        adTimer = null;
-        window.location.href = targetUrl;
-      }
-    }, 1000);
-  }
-
-  function updateCountdownUI(remaining){
-    countdownNumber.textContent = Math.max(remaining, 0);
-    var offset = RING_CIRCUMFERENCE * (1 - Math.max(remaining, 0) / AD_SECONDS);
-    ringProgress.style.strokeDashoffset = offset;
+    if(adTimer) clearTimeout(adTimer);
+    adTimer = setTimeout(function(){
+      adTimer = null;
+      window.location.href = targetUrl;
+    }, AD_SECONDS * 1000);
   }
 
   /* ---------- boot ---------- */
