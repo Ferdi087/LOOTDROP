@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LOOTDROP – Gratis-Spiele &amp; Gaming-Deals</title>
+<meta name="description" content="Alle aktuellen Gratis-Spiele und Gaming-Deals auf einen Blick – live aktualisiert." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#0F0E17;
+    --bg-soft:#15131F;
+    --surface:#1B1A2E;
+    --surface-2:#242140;
+    --border:rgba(255,255,255,0.08);
+    --accent:#FFB100;
+    --accent-soft:#FFD166;
+    --accent-2:#FF5470;
+    --text:#F4F1ED;
+    --text-muted:#9C97B4;
+    --radius-lg:18px;
+    --radius-md:14px;
+    --radius-sm:8px;
+    --font-display:'Bebas Neue', sans-serif;
+    --font-body:'Inter', system-ui, sans-serif;
+    --shadow-soft:0 10px 30px rgba(0,0,0,0.35);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(900px 500px at 12% -10%, rgba(255,177,0,0.10), transparent 60%),
+      radial-gradient(700px 500px at 100% 0%, rgba(255,84,112,0.08), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  body.no-scroll{ overflow:hidden; }
+
+  a{ color:inherit; }
+  button{ font-family:inherit; cursor:pointer; }
+
+  ::selection{ background:var(--accent); color:#1B1505; }
+
+  :focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+    border-radius:6px;
+  }
+
+  /* ---------- layout shell ---------- */
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 20px 60px;
+  }
+
+  header.site{
+    padding:46px 20px 30px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:36px;
+  }
+  .header-inner{
+    max-width:1180px;
+    margin:0 auto;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:20px;
+  }
+  .brand-eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:0.72rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  .live-dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 0 0 rgba(255,177,0,0.6);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(255,177,0,0.55); }
+    70%{ box-shadow:0 0 0 9px rgba(255,177,0,0); }
+    100%{ box-shadow:0 0 0 0 rgba(255,177,0,0); }
+  }
+  h1.brand{
+    font-family:var(--font-display);
+    font-size:clamp(2.6rem, 6vw, 4rem);
+    letter-spacing:0.02em;
+    line-height:0.9;
+    margin:0;
+  }
+  h1.brand span{ color:var(--accent); }
+  p.brand-sub{
+    margin:10px 0 0;
+    color:var(--text-muted);
+    font-size:0.98rem;
+    max-width:46ch;
+  }
+  .status-box{
+    text-align:right;
+    font-size:0.84rem;
+    color:var(--text-muted);
+    min-width:200px;
+  }
+  .status-box .count{
+    font-family:var(--font-display);
+    font-size:1.9rem;
+    color:var(--text);
+    line-height:1;
+    display:block;
+    margin-bottom:4px;
+  }
+  .status-box .count strong{ color:var(--accent); }
+
+  /* ---------- grid ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(252px, 1fr));
+    gap:22px;
+  }
+
+  .card{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    overflow:hidden;
+    text-align:left;
+    padding:0;
+    color:inherit;
+    display:flex;
+    flex-direction:column;
+    transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+  .card:hover, .card:focus-visible{
+    transform:translateY(-4px);
+    border-color:rgba(255,177,0,0.4);
+    box-shadow:var(--shadow-soft);
+  }
+  .card-media{
+    position:relative;
+    aspect-ratio:16/9;
+    background:linear-gradient(135deg, var(--surface-2), var(--surface));
+    overflow:hidden;
+  }
+  .card-media img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .price-tag{
+    position:absolute;
+    top:14px; left:-8px;
+    width:96px; height:38px;
+    background:linear-gradient(135deg, var(--accent), var(--accent-soft));
+    clip-path:polygon(0 50%, 22% 0, 100% 0, 100% 100%, 22% 100%);
+    transform:rotate(-10deg);
+    display:flex; align-items:center; justify-content:center;
+    padding-left:14px;
+    box-shadow:0 6px 14px rgba(0,0,0,0.4);
+    z-index:2;
+  }
+  .price-tag::after{
+    content:"";
+    position:absolute; left:27%; top:50%; transform:translate(-50%,-50%);
+    width:7px; height:7px; border-radius:50%;
+    background:var(--bg);
+  }
+  .price-tag span{
+    font-family:var(--font-display);
+    font-size:1.02rem;
+    letter-spacing:0.04em;
+    color:#1B1505;
+  }
+  .card-body{
+    padding:16px 18px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    flex:1;
+  }
+  .platform-row{
+    display:flex; flex-wrap:wrap; gap:6px;
+  }
+  .pill{
+    font-size:0.68rem;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--text-muted);
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    padding:3px 8px;
+    border-radius:99px;
+  }
+  .card-title{
+    font-family:var(--font-display);
+    font-size:1.4rem;
+    letter-spacing:0.01em;
+    line-height:1.05;
+    margin:0;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .price-row{
+    display:flex; align-items:baseline; gap:10px;
+    margin-top:auto;
+  }
+  .price-old{
+    color:var(--text-muted);
+    text-decoration:line-through;
+    font-size:0.88rem;
+  }
+  .price-new{
+    color:var(--accent);
+    font-family:var(--font-display);
+    font-size:1.1rem;
+    letter-spacing:0.04em;
+  }
+  .end-date{
+    font-size:0.74rem;
+    color:var(--text-muted);
+  }
+
+  /* skeleton */
+  .skeleton .card-media{ background:linear-gradient(100deg, var(--surface) 30%, var(--surface-2) 50%, var(--surface) 70%); background-size:200% 100%; animation:shimmer 1.4s infinite; }
+  .skeleton .sk-line{ height:12px; border-radius:6px; background:var(--surface-2); }
+  @keyframes shimmer{ 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
+
+  .state-box{
+    grid-column:1/-1;
+    text-align:center;
+    padding:60px 20px;
+    color:var(--text-muted);
+    border:1px dashed var(--border);
+    border-radius:var(--radius-lg);
+  }
+  .state-box h2{
+    font-family:var(--font-display);
+    font-size:1.6rem;
+    color:var(--text);
+    margin:0 0 8px;
+    letter-spacing:0.02em;
+  }
+  .state-box button{
+    margin-top:16px;
+    background:var(--accent);
+    color:#1B1505;
+    border:none;
+    font-weight:700;
+    padding:10px 20px;
+    border-radius:99px;
+    font-size:0.88rem;
+  }
+
+  footer.site{
+    text-align:center;
+    color:var(--text-muted);
+    font-size:0.8rem;
+    padding:30px 20px 50px;
+    line-height:1.7;
+  }
+  footer.site a{ color:var(--accent-soft); text-decoration:none; }
+  footer.site a:hover{ text-decoration:underline; }
+
+  /* ---------- modal ---------- */
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(8,7,12,0.78);
+    backdrop-filter:blur(6px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:50;
+  }
+  .overlay[hidden]{ display:none; }
+
+  .modal{
+    width:100%;
+    max-width:480px;
+    max-height:88vh;
+    overflow-y:auto;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    position:relative;
+    box-shadow:0 30px 80px rgba(0,0,0,0.55);
+  }
+  .modal-close{
+    position:absolute;
+    top:12px; right:12px;
+    width:34px; height:34px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:rgba(15,14,23,0.7);
+    color:var(--text);
+    font-size:1.1rem;
+    line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    z-index:3;
+  }
+  .modal-media{
+    width:100%;
+    aspect-ratio:16/9;
+    background:var(--surface-2);
+    overflow:hidden;
+  }
+  .modal-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .modal-body{ padding:22px 24px 26px; display:flex; flex-direction:column; gap:14px; }
+  .modal-platforms{ display:flex; flex-wrap:wrap; gap:6px; }
+  .modal-title{
+    font-family:var(--font-display);
+    font-size:2rem;
+    letter-spacing:0.01em;
+    line-height:1.02;
+    margin:0;
+  }
+  .modal-price{ display:flex; align-items:baseline; gap:12px; }
+  .modal-price .price-old{ font-size:1rem; }
+  .modal-price .price-new{ font-size:1.3rem; }
+  .modal-desc{
+    color:var(--text-muted);
+    font-size:0.92rem;
+    line-height:1.55;
+    display:-webkit-box;
+    -webkit-line-clamp:5;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .modal-actions{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+  .btn{
+    border:none;
+    border-radius:12px;
+    padding:13px 18px;
+    font-weight:700;
+    font-size:0.95rem;
+    text-align:center;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn-primary{ background:var(--accent); color:#1B1505; }
+  .btn-primary:hover{ background:var(--accent-soft); }
+  .btn-secondary{ background:var(--surface-2); color:var(--text); border:1px solid var(--border); }
+  .btn-secondary:hover{ border-color:rgba(255,177,0,0.4); }
+
+  /* ---------- ad interstitial ---------- */
+  .ad-overlay{
+    position:fixed; inset:0;
+    background:var(--bg-soft);
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .ad-overlay[hidden]{ display:none; }
+  .ad-card{
+    width:100%;
+    max-width:560px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:30px;
+    text-align:center;
+  }
+  .ad-eyebrow{
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    font-size:0.72rem;
+    color:var(--accent);
+    font-weight:700;
+    margin:0 0 8px;
+  }
+  .ad-title{
+    font-family:var(--font-display);
+    font-size:1.5rem;
+    letter-spacing:0.01em;
+    margin:0 0 22px;
+    line-height:1.2;
+  }
+  .ad-title span{ color:var(--accent); }
+  .ad-slot-wrap{
+    min-height:90px;
+    background:var(--surface-2);
+    border:1px dashed var(--border);
+    border-radius:var(--radius-md);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    margin-bottom:24px;
+    padding:6px;
+  }
+  .countdown-wrap{
+    position:relative;
+    width:104px; height:104px;
+    margin:0 auto 18px;
+  }
+  .countdown-ring{ width:100%; height:100%; transform:rotate(-90deg); }
+  .ring-bg{ fill:none; stroke:var(--surface-2); stroke-width:7; }
+  .ring-progress{
+    fill:none;
+    stroke:var(--accent);
+    stroke-width:7;
+    stroke-linecap:round;
+    transition:stroke-dashoffset 1s linear;
+  }
+  #countdown-number{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display);
+    font-size:2.1rem;
+    color:var(--text);
+  }
+  .ad-redirect-text{ color:var(--text-muted); font-size:0.88rem; margin:0; }
+  .ad-redirect-text a{ color:var(--accent-soft); }
+  .ad-disclaimer{ color:var(--text-muted); font-size:0.72rem; margin:18px 0 0; opacity:0.7; }
+
+  @media (max-width:560px){
+    header.site{ padding:34px 16px 24px; }
+    .status-box{ text-align:left; }
+    .modal-title{ font-size:1.6rem; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .live-dot{ animation:none; }
+    .card{ transition:none; }
+    .skeleton .card-media{ animation:none; }
+    .ring-progress{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="header-inner">
+    <div>
+      <p class="brand-eyebrow"><span class="live-dot" aria-hidden="true"></span> Live · Gratis-Radar</p>
+      <h1 class="brand">LOOT<span>DROP</span></h1>
+      <p class="brand-sub">Alle aktuellen Gratis-Spiele und Gaming-Deals auf einen Blick. Die Liste aktualisiert sich automatisch alle 10 Sekunden.</p>
+    </div>
+    <div class="status-box">
+      <span class="count"><strong id="deal-count">–</strong> Deals gerade aktiv</span>
+      <span id="last-update">Lade Deals …</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid" id="grid" aria-live="polite"></div>
+</main>
+
+<footer class="site">
+  Daten von <a href="https://www.gamerpower.com" target="_blank" rel="noopener">GamerPower.com</a> · kein Login, kein Tracking auf dieser Seite.<br>
+  Bevor es zu einem Shop geht, zeigen wir kurz eine Werbeanzeige – das hilft, dieses Projekt kostenlos zu betreiben.
+</footer>
+
+<!-- Detail popup -->
+<div class="overlay" id="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="modal-close" id="modal-close" aria-label="Schließen">✕</button>
+    <div class="modal-media">
+      <img id="modal-img" src="" alt="" loading="lazy">
+    </div>
+    <div class="modal-body">
+      <div class="modal-platforms" id="modal-platforms"></div>
+      <h2 class="modal-title" id="modal-title"></h2>
+      <div class="modal-price">
+        <span class="price-old" id="modal-price-old"></span>
+        <span class="price-new">GRATIS</span>
+      </div>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div class="modal-actions" id="modal-actions"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Ad interstitial / redirect -->
+<div class="ad-overlay" id="ad-overlay" hidden>
+  <div class="ad-card">
+    <p class="ad-eyebrow">Einen Moment</p>
+    <h2 class="ad-title">Du wirst weitergeleitet zu <span id="ad-target-domain">Shop</span></h2>
+
+    <div class="ad-slot-wrap" id="adsense-container"></div>
+
+    <div class="countdown-wrap">
+      <svg class="countdown-ring" viewBox="0 0 100 100">
+        <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
+        <circle class="ring-progress" id="ring-progress" cx="50" cy="50" r="45"></circle>
+      </svg>
+      <span id="countdown-number">10</span>
+    </div>
+
+    <p class="ad-redirect-text">Falls die Weiterleitung nicht automatisch startet: <a id="ad-fallback-link" href="#" rel="noopener">hier klicken</a></p>
+    <p class="ad-disclaimer">Werbung wird über Google AdSense ausgespielt.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var API_URL = "https://www.gamerpower.com/api/giveaways?type=game";
+  var REFRESH_MS = 10000;
+  var AD_SECONDS = 10;
+  var ADSENSE_CLIENT = "ca-pub-3018232320346847";
+  var ADSENSE_SLOT = "7825819006";
+
+  var gridEl = document.getElementById("grid");
+  var dealCountEl = document.getElementById("deal-count");
+  var lastUpdateEl = document.getElementById("last-update");
+
+  var modalOverlay = document.getElementById("modal-overlay");
+  var modalClose = document.getElementById("modal-close");
+  var modalImg = document.getElementById("modal-img");
+  var modalPlatforms = document.getElementById("modal-platforms");
+  var modalTitle = document.getElementById("modal-title");
+  var modalPriceOld = document.getElementById("modal-price-old");
+  var modalDesc = document.getElementById("modal-desc");
+  var modalActions = document.getElementById("modal-actions");
+
+  var adOverlay = document.getElementById("ad-overlay");
+  var adTargetDomain = document.getElementById("ad-target-domain");
+  var adsenseContainer = document.getElementById("adsense-container");
+  var ringProgress = document.getElementById("ring-progress");
+  var countdownNumber = document.getElementById("countdown-number");
+  var adFallbackLink = document.getElementById("ad-fallback-link");
+
+  var currentDeals = [];
+  var lastIdSignature = "";
+  var lastFetchTime = null;
+  var adTimer = null;
+
+  var RING_CIRCUMFERENCE = 2 * Math.PI * 45;
+  ringProgress.style.strokeDasharray = RING_CIRCUMFERENCE;
+
+  /* ---------- helpers ---------- */
+
+  function cleanTitle(raw){
+    if(!raw) return "";
+    var t = raw.replace(/\([^)]*\)/g, "");
+    t = t.replace(/\[[^\]]*\]/g, "");
+    t = t.replace(/\bgiveaway\b/gi, "");
+    t = t.replace(/\bfreebie\b/gi, "");
+    t = t.replace(/\s+/g, " ").trim();
+    return t;
+  }
+
+  function isUsableDeal(deal){
+    if(!deal.open_giveaway_url) return false;
+    if(!deal.image && !deal.thumbnail) return false;
+    var worth = (deal.worth || "").toString().trim();
+    if(!worth || worth === "N/A") return false;
+    return true;
+  }
+
+  function formatEndDate(value){
+    if(!value || value === "N/A") return "";
+    var d = new Date(value.replace(" ", "T"));
+    if(isNaN(d.getTime())) return "";
+    return "Endet " + d.toLocaleDateString("de-DE", { day:"2-digit", month:"2-digit", year:"numeric" });
+  }
+
+  function platformList(deal){
+    if(!deal.platforms) return [];
+    return deal.platforms.split(",").map(function(p){ return p.trim(); }).filter(Boolean);
+  }
+
+  function escapeForAttr(str){
+    return (str || "").toString();
+  }
+
+  function hostnameOf(url){
+    try{ return new URL(url).hostname.replace(/^www\./, ""); }
+    catch(e){ return "dem Shop"; }
+  }
+
+  /* ---------- fetching ---------- */
+
+  function fetchDeals(){
+    fetch(API_URL, { cache: "no-store" })
+      .then(function(res){
+        if(!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function(data){
+        var list = Array.isArray(data) ? data : (data && data.giveaways) || [];
+        var deals = list
+          .filter(isUsableDeal)
+          .map(function(d){
+            return Object.assign({}, d, { _title: cleanTitle(d.title) });
+          })
+          .sort(function(a, b){
+            return new Date((b.published_date || "").replace(" ", "T")) -
+                   new Date((a.published_date || "").replace(" ", "T"));
+          });
+
+        lastFetchTime = new Date();
+        renderGrid(deals);
+        updateLastUpdateLabel();
+      })
+      .catch(function(err){
+        console.error("Konnte Deals nicht laden:", err);
+        if(currentDeals.length === 0){
+          showErrorState();
+        }
+        lastUpdateEl.textContent = "Aktualisierung fehlgeschlagen – versuche es weiter automatisch.";
+      });
+  }
+
+  function updateLastUpdateLabel(){
+    if(!lastFetchTime) return;
+    lastUpdateEl.textContent = "Aktualisiert: " + lastFetchTime.toLocaleTimeString("de-DE");
+  }
+
+  /* ---------- rendering ---------- */
+
+  function showSkeleton(){
+    var html = "";
+    for(var i = 0; i < 8; i++){
+      html += '<div class="card skeleton"><div class="card-media"></div>' +
+              '<div class="card-body"><div class="sk-line" style="width:60%"></div>' +
+              '<div class="sk-line" style="width:90%;height:18px"></div>' +
+              '<div class="sk-line" style="width:40%"></div></div></div>';
+    }
+    gridEl.innerHTML = html;
+  }
+
+  function showErrorState(){
+    gridEl.innerHTML =
+      '<div class="state-box">' +
+      '<h2>Die Deal-Datenbank antwortet gerade nicht</h2>' +
+      '<p>Das kann an deiner Verbindung oder kurzzeitig an GamerPower.com liegen. Wir versuchen es automatisch weiter.</p>' +
+      '<button id="retry-btn" type="button">Jetzt erneut versuchen</button>' +
+      "</div>";
+    document.getElementById("retry-btn").addEventListener("click", fetchDeals);
+  }
+
+  function showEmptyState(){
+    gridEl.innerHTML =
+      '<div class="state-box">' +
+      '<h2>Gerade ist hier nichts los</h2>' +
+      "<p>Aktuell läuft kein Spiele-Deal. Wir prüfen alle 10 Sekunden automatisch weiter – schau gleich wieder vorbei.</p>" +
+      "</div>";
+  }
+
+  function renderGrid(deals){
+    var signature = deals.map(function(d){ return d.id; }).join(",");
+    currentDeals = deals;
+    dealCountEl.textContent = deals.length;
+
+    if(deals.length === 0){
+      lastIdSignature = signature;
+      showEmptyState();
+      return;
+    }
+
+    if(signature === lastIdSignature){
+      return; // nothing actually changed, skip re-render to avoid flicker
+    }
+    lastIdSignature = signature;
+
+    var html = "";
+    deals.forEach(function(deal){
+      var img = deal.thumbnail || deal.image || "";
+      var platforms = platformList(deal).slice(0, 3);
+      var pillsHtml = platforms.map(function(p){
+        return '<span class="pill">' + escHtml(p) + "</span>";
+      }).join("");
+      var endLabel = formatEndDate(deal.end_date);
+
+      html +=
+        '<button type="button" class="card" data-id="' + deal.id + '">' +
+        '<div class="card-media">' +
+        '<div class="price-tag"><span>GRATIS</span></div>' +
+        '<img src="' + escHtml(img) + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' +
+        "</div>" +
+        '<div class="card-body">' +
+        (pillsHtml ? '<div class="platform-row">' + pillsHtml + "</div>" : "") +
+        '<h3 class="card-title">' + escHtml(deal._title || deal.title) + "</h3>" +
+        '<div class="price-row">' +
+        '<span class="price-old">statt ' + escHtml(deal.worth) + "</span>" +
+        '<span class="price-new">0,00 €</span>' +
+        "</div>" +
+        (endLabel ? '<span class="end-date">' + endLabel + "</span>" : "") +
+        "</div>" +
+        "</button>";
+    });
+
+    gridEl.innerHTML = html;
+
+    Array.prototype.forEach.call(gridEl.querySelectorAll(".card"), function(cardEl){
+      cardEl.addEventListener("click", function(){
+        var id = parseInt(cardEl.getAttribute("data-id"), 10);
+        var deal = currentDeals.filter(function(d){ return d.id === id; })[0];
+        if(deal) openModal(deal);
+      });
+    });
+  }
+
+  function escHtml(str){
+    return (str || "").toString()
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  /* ---------- modal ---------- */
+
+  function openModal(deal){
+    modalImg.src = deal.image || deal.thumbnail || "";
+    modalImg.alt = deal._title || deal.title || "";
+    modalTitle.textContent = deal._title || deal.title || "";
+    modalPriceOld.textContent = "statt " + (deal.worth || "");
+    modalDesc.textContent = deal.description || "Keine Beschreibung verfügbar.";
+
+    var platforms = platformList(deal);
+    modalPlatforms.innerHTML = platforms.map(function(p){
+      return '<span class="pill">' + escHtml(p) + "</span>";
+    }).join("");
+
+    modalActions.innerHTML = "";
+    modalActions.appendChild(
+      buildActionButton("Jetzt holen →", "btn-primary", deal.open_giveaway_url)
+    );
+    if(deal.gamerpower_url && deal.gamerpower_url !== deal.open_giveaway_url){
+      modalActions.appendChild(
+        buildActionButton("Mehr Infos auf GamerPower", "btn-secondary", deal.gamerpower_url)
+      );
+    }
+
+    modalOverlay.hidden = false;
+    document.body.classList.add("no-scroll");
+  }
+
+  function buildActionButton(label, cssClass, url){
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn " + cssClass;
+    btn.textContent = label;
+    btn.addEventListener("click", function(){
+      if(!url) return;
+      startAdRedirect(url);
+    });
+    return btn;
+  }
+
+  function closeModal(){
+    modalOverlay.hidden = true;
+    if(adOverlay.hidden){
+      document.body.classList.remove("no-scroll");
+    }
+  }
+
+  modalClose.addEventListener("click", closeModal);
+  modalOverlay.addEventListener("click", function(e){
+    if(e.target === modalOverlay) closeModal();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && !modalOverlay.hidden && adOverlay.hidden){
+      closeModal();
+    }
+  });
+
+  /* ---------- ad interstitial + redirect ---------- */
+
+  function loadAdsenseScriptOnce(){
+    if(document.getElementById("adsbygoogle-script")) return;
+    var s = document.createElement("script");
+    s.id = "adsbygoogle-script";
+    s.async = true;
+    s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + ADSENSE_CLIENT;
+    s.crossOrigin = "anonymous";
+    document.head.appendChild(s);
+  }
+
+  function startAdRedirect(targetUrl){
+    modalOverlay.hidden = true;
+    loadAdsenseScriptOnce();
+
+    adsenseContainer.innerHTML = "";
+    var ins = document.createElement("ins");
+    ins.className = "adsbygoogle";
+    ins.style.display = "block";
+    ins.style.width = "100%";
+    ins.setAttribute("data-ad-client", ADSENSE_CLIENT);
+    ins.setAttribute("data-ad-slot", ADSENSE_SLOT);
+    ins.setAttribute("data-ad-format", "auto");
+    ins.setAttribute("data-full-width-responsive", "true");
+    adsenseContainer.appendChild(ins);
+
+    try{
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    }catch(e){
+      console.warn("AdSense konnte nicht geladen werden:", e);
+    }
+
+    adTargetDomain.textContent = hostnameOf(targetUrl);
+    adFallbackLink.href = targetUrl;
+
+    adOverlay.hidden = false;
+    document.body.classList.add("no-scroll");
+
+    var remaining = AD_SECONDS;
+    updateCountdownUI(remaining);
+
+    if(adTimer) clearInterval(adTimer);
+    adTimer = setInterval(function(){
+      remaining -= 1;
+      updateCountdownUI(remaining);
+      if(remaining <= 0){
+        clearInterval(adTimer);
+        adTimer = null;
+        window.location.href = targetUrl;
+      }
+    }, 1000);
+  }
+
+  function updateCountdownUI(remaining){
+    countdownNumber.textContent = Math.max(remaining, 0);
+    var offset = RING_CIRCUMFERENCE * (1 - Math.max(remaining, 0) / AD_SECONDS);
+    ringProgress.style.strokeDashoffset = offset;
+  }
+
+  /* ---------- boot ---------- */
+
+  showSkeleton();
+  fetchDeals();
+  setInterval(fetchDeals, REFRESH_MS);
+  setInterval(updateLastUpdateLabel, 1000);
+
+})();
+</script>
+</body>
+</html>
